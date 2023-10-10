@@ -1,0 +1,57 @@
+header {
+  background-color: lightblue;
+  border-bottom: 1px solid;
+}
+
+header nav {
+  height: 50px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 50px;
+}
+
+header li {
+  list-style: none;
+  color: rgba(0, 0, 255, 0.769);
+  border: 0.5px solid rgba(4, 43, 56, 0.876);
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+header .modal-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.todoList .todoContent {
+  border: 1px solid rgba(128, 128, 128, 0.712);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.todoList h3 span {
+  display: block;
+  margin: 4px;
+}
+
+.todoList .todoContent button {
+  border-radius: 10px;
+  border: 0.5px solid lightblue;
+  background-color: white;
+  color: red;
+  font-weight: bold;
+}
+
+.otpModal{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
