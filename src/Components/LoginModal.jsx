@@ -1,67 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { authentication } from '../Firebase.config';
+import { auth } from '../Firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import toast from 'react-hot-toast';
 
-const LoginModal = ({ show, onHide }) => {
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [verificationCode, setVerificationCode] = useState('');
-    const [recaptchaVerifier, setRecaptchaVerifier] = useState(null);
+const LoginModal = ({ show, onHide, setModalSignUp }) => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
-    useEffect(() => {
-        // Initialize RecaptchaVerifier when the component mounts
-        if (recaptchaVerifier) {
-            const verifier = new RecaptchaVerifier('recaptcha-container', {
-                'size': 'invisible',
-                'callback': (response) => {
-                    // Callback logic after reCAPTCHA verification is completed
-                }
-            }, authentication);
+    const signIn = (e) => {
+        e.preventDefault();
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                toast.success('Login Successfully !')
+                onHide()
+                console.log(userCredential)
+            }).catch((error) => {
+                console.log(error)
+            })
 
-            // Render reCAPTCHA widget
-            verifier.render().then(widgetId => {
-                // Do something with the widget ID, if needed
-            });
-
-            setRecaptchaVerifier(verifier);
-
-            // Clean up the recaptchaVerifier on component unmount (optional)
-            return () => {
-                verifier.clear();
-            };
-        }
-    }, [recaptchaVerifier]);
-
-    const onSignup = async () => {
-        // Start the reCAPTCHA verification and then proceed with phone number verification
-        if (recaptchaVerifier) {
-            signInWithPhoneNumber(authentication, phoneNumber, recaptchaVerifier)
-                .then((confirmationResult) => {
-                    // SMS verification sent successfully
-                    // Store confirmationResult to use later for verifying the code
-                    console.log("SMS sent successfully");
-                })
-                .catch((error) => {
-                    // Handle errors here
-                    console.error(error);
-                });
-        }
-    };
-
-    const onVerifyCode = async () => {
-        // Use the verificationCode to confirm the phone number
-        if (verificationCode && recaptchaVerifier) {
-            const confirmationResult = new ConfirmationResult(authentication, verificationCode);
-
-            try {
-                await confirmationResult.confirm(verificationCode);
-                console.log("Phone number verified successfully!");
-            } catch (error) {
-                // Handle verification errors
-                console.error(error);
-            }
-        }
-    };
+    }
 
     return (
         <div>
@@ -78,22 +36,18 @@ const LoginModal = ({ show, onHide }) => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <div id="recaptcha-container"></div>
-                    <input
-                        type="text"
-                        placeholder="Enter phone number"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                    <Button onClick={onSignup}>Send Verification Code</Button>
-                    <br />
-                    <input
-                        type="text"
-                        placeholder="Enter verification code"
-                        value={verificationCode}
-                        onChange={(e) => setVerificationCode(e.target.value)}
-                    />
-                    <Button onClick={onVerifyCode}>Verify Code</Button>
+                    <form onSubmit={signIn}>
+                        <div className='sign-in-container d-flex justify-content-between align-items-center flex-column'>
+                            <h5 className='text-center'>Does't have account ? <Button onClick={() => {
+                                onHide()
+                                setModalSignUp(true)
+                            }}>SignUp</Button></h5>
+                            <input type="email" placeholder='Enter your  email' className='mt-3' value={email} onChange={(e) => setEmail(e.target.value)} />
+                            <input type="password" placeholder='Enter your password' className='mt-3' value={password} onChange={(e) => setPassword(e.target.value)} />
+                            <Button type='submit' className='mt-3 text-center' >Log In</Button>
+
+                        </div>
+                    </form>
                 </Modal.Body>
             </Modal>
         </div>
