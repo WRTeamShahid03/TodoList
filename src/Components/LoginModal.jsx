@@ -3,18 +3,26 @@ import { Button, Modal } from 'react-bootstrap';
 import { auth } from '../Firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { userSignIn } from '../store/slices/authSlice';
 
 const LoginModal = ({ show, onHide, setModalSignUp }) => {
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
+    const dispatch = useDispatch();
 
     const signIn = (e) => {
         e.preventDefault();
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
+                const user = userCredential.user
                 toast.success('Login Successfully !')
                 onHide()
-                console.log(userCredential)
+                console.log(userCredential,'userCredential')
+                console.log('user',user)
+                dispatch(userSignIn({user}))
             }).catch((error) => {
                 console.log(error)
             })
