@@ -2,9 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     isLogIn: false,
+    isVerified: false,
     userName: '',
     userEmail: '',
-    isVerified: false,
+    userProfile: '',
 }
 
 export const authSlice = createSlice({
@@ -33,11 +34,28 @@ export const authSlice = createSlice({
         userLogOut: (state, action) => {
             state = initialState;
             return state;
+        },
+        userProfile: (state, action) => {
+
+            const { name,profile } = action.payload;
+            console.log('userSLiceUSerName',name)
+            if (name) {
+                return {
+                    ...state,
+                    userName: name,
+                    userProfile: profile
+                }
+
+            }
+            else {
+                // Reset state to initial state if user is null
+                return initialState;
+            }
         }
     }
 
 })
 
-export const { userSignUp, userSignIn, userLogOut } = authSlice.actions
+export const { userSignUp, userSignIn, userLogOut, userProfile } = authSlice.actions
 
 export default authSlice.reducer

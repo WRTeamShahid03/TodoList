@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import todosSlice from "./slices/todosSlice";
 import authSlice from "./slices/authSlice";
+import userProfile  from "./slices/authSlice";
 import storage from "redux-persist/lib/storage";
 import {
     persistStore,
@@ -13,6 +14,7 @@ import {
     PURGE
 } from "redux-persist";
 import { combineReducers } from "@reduxjs/toolkit";
+import thunk from "redux-thunk";
 
 const persistConfig = {
     key: "root",
@@ -20,7 +22,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-     todosSlice,authSlice,
+     todosSlice,authSlice,userProfile
 });
 
 export const store = configureStore({
@@ -31,6 +33,7 @@ export const store = configureStore({
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
         }),
+    // middleware: [thunk],
     devTools: true
 })
 

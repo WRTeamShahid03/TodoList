@@ -8,7 +8,7 @@ import { userSignIn } from '../store/slices/authSlice';
 
 const LoginModal = ({ show, onHide, setModalSignUp }) => {
 
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState('wrteamshahid03@gmail.com')
     const [password, setPassword] = useState('')
 
     const dispatch = useDispatch();

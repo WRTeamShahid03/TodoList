@@ -11,6 +11,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addTodo, deleteTodo, editTodo } from './store/slices/todosSlice';
 import { userLogOut } from './store/slices/authSlice';
 import { Button } from 'react-bootstrap';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Profile from './Components/Profile.jsx'
+import defaultProfile from './assets/3.svg'
 
 function App() {
 
@@ -47,6 +50,7 @@ function App() {
   const [editIndex, setEditIndex] = useState(null);
   const [modalShow, setModalShow] = useState(false);
   const [modalSignUp, setModalSignUp] = useState(false);
+  const [profileShow, setProfileShow] = useState(false);
 
   const editTodoHandler = (index) => {
     setEditIndex(index);
@@ -66,7 +70,7 @@ function App() {
       <header style={{ padding: '12px 0px' }}>
         <nav className='container d-flex align-items-center justify-content-between'>
           <h2>iTodos</h2>
-          {user ?
+          {/* {user ?
             <div>
               <span>{authUser.userEmail}</span>
               <Button onClick={userSignOut} className='ms-2'>Sign Out</Button>
@@ -74,16 +78,43 @@ function App() {
             // <li><Authdetails authUser={authUser} userSignOut={userSignOut} /></li>
             :
             <button onClick={() => setModalShow(true)} className='btn-primary btn'>LogIn/SignUp</button>
+          } */}
+          {user ?
+            <>
+            <div className='d-flex justify-content-center align-items-center profileImgWrapper'>
+              <span>
+               <img src={authUser.userProfile?authUser.userProfile:defaultProfile} alt="profileImg" className='profileImg' />
+              </span>
+              <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                  {
+                    authUser.userName ? <span>{authUser.userName}</span> : <span>{authUser.userEmail}</span>
+                  }
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#" onClick={() => setProfileShow(true)}>Profile</Dropdown.Item>
+                  <Dropdown.Item href="#" onClick={userSignOut}>LogOut</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+            </>
+            :
+            <button onClick={() => setModalShow(true)} className='btn-primary btn'>LogIn/SignUp</button>
           }
-
         </nav>
-        <LoginModal
-          show={modalShow}
-          setModalSignUp={setModalSignUp}
-          onHide={() => setModalShow(false)}
+        <>
+          <LoginModal
+            show={modalShow}
+            setModalSignUp={setModalSignUp}
+            onHide={() => setModalShow(false)}
 
-        />
-        <SignUp show={modalSignUp} onHide={() => setModalSignUp(false)} />
+          />
+          <SignUp show={modalSignUp} onHide={() => setModalSignUp(false)} />
+          <Profile show={profileShow}
+            setProfileShow={setProfileShow}
+            onHide={() => setProfileShow(false)} />
+        </>
       </header>
       {
         user ? <div className='addTodo'>

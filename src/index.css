@@ -55,3 +55,18 @@ header .modal-body {
   flex-direction: column;
   gap: 20px;
 }
+
+.profileImgWrapper{
+  border: 2px solid lightgray;
+  gap: 12px;
+}
+.profileImgWrapper{
+  border: 1px solid;
+  border-radius:  6px;
+  padding: 4px 12px;
+  gap: 12px;
+}
+
+.profileImg{
+  width: 40px;
+}
