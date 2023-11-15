@@ -1,17 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { auth } from '../Firebase'
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { userSignIn } from '../store/slices/authSlice';
+import authSlice, { userSignIn } from '../store/slices/authSlice';
 
 const LoginModal = ({ show, onHide, setModalSignUp }) => {
 
     const [email, setEmail] = useState('wrteamshahid03@gmail.com')
     const [password, setPassword] = useState('')
 
+    const [number, setNumber] = useState('')
+
     const dispatch = useDispatch();
+
+    const forgotPasswordHandler = (e) => {
+        // alert('clicked')
+        e.preventDefault();
+        if (email) {
+            sendPasswordResetEmail(auth, email).then((data) => {
+                toast.success('Reset password email sent!')
+            }).catch(error => {
+                toast.error(error)
+            })
+        }
+        else {
+            toast.error('Please enter email first')
+        }
+    }
 
     const signIn = (e) => {
         e.preventDefault();
@@ -20,13 +37,12 @@ const LoginModal = ({ show, onHide, setModalSignUp }) => {
                 const user = userCredential.user
                 toast.success('Login Successfully !')
                 onHide()
-                console.log(userCredential,'userCredential')
-                console.log('user',user)
-                dispatch(userSignIn({user}))
+                console.log(userCredential, 'userCredential')
+                console.log('user', user)
+                dispatch(userSignIn({ user }))
             }).catch((error) => {
                 console.log(error)
             })
-
     }
 
     return (
@@ -53,6 +69,10 @@ const LoginModal = ({ show, onHide, setModalSignUp }) => {
                             <input type="email" placeholder='Enter your  email' className='mt-3' value={email} onChange={(e) => setEmail(e.target.value)} />
                             <input type="password" placeholder='Enter your password' className='mt-3' value={password} onChange={(e) => setPassword(e.target.value)} />
                             <Button type='submit' className='mt-3 text-center' >Log In</Button>
+
+                            <span className='mt-3 text-danger'
+                                onClick={forgotPasswordHandler}
+                                style={{ cursor: 'pointer' }}>Forgot Password ?</span>
 
                         </div>
                     </form>

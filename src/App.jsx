@@ -3,14 +3,12 @@ import './App.css'
 import 'react-phone-number-input/style.css'
 import LoginModal from './Components/LoginModal';
 import SignUp from './Components/Auth/SignUp';
-import Authdetails from './Components/Auth/Authdetails';
 import { auth } from './Firebase'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { signOut } from 'firebase/auth'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux';
 import { addTodo, deleteTodo, editTodo } from './store/slices/todosSlice';
 import { userLogOut } from './store/slices/authSlice';
-import { Button } from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Profile from './Components/Profile.jsx'
 import defaultProfile from './assets/3.svg'
@@ -31,7 +29,7 @@ function App() {
   const userSignOut = () => {
     signOut(auth).then(() => {
       toast.success('Log out Successfully')
-      dispatch(userLogOut())
+      dispatch(userLogOut(false))
     }).catch((err) => [
       console.log(err)
     ])
@@ -47,22 +45,42 @@ function App() {
     setTodo('')
   }
 
+  const removeTodo = (id)=>{
+    if(user){
+      dispatch(deleteTodo(id))
+    }
+    else{
+      toast.error("Please Login First!")
+    }
+  }
+
   const [editIndex, setEditIndex] = useState(null);
   const [modalShow, setModalShow] = useState(false);
   const [modalSignUp, setModalSignUp] = useState(false);
   const [profileShow, setProfileShow] = useState(false);
 
   const editTodoHandler = (index) => {
-    setEditIndex(index);
-    setName(todoData[index].name);
-    setTodo(todoData[index].todo);
+    if(user){
+
+      setEditIndex(index);
+      setName(todoData[index].name);
+      setTodo(todoData[index].todo);
+    }
+    else{
+      toast.error("Please Login First!")
+    }
   };
 
   const updateTodo = () => {
-    dispatch(editTodo({ id: editIndex, name, todo }))
-    setEditIndex(null);
-    setName('');
-    setTodo('');
+    if(user){
+      dispatch(editTodo({ id: editIndex, name, todo }))
+      setEditIndex(null);
+      setName('');
+      setTodo('');
+    }
+    else{
+      toast.error("Please Login First!")
+    }
   };
 
   return (
@@ -70,15 +88,6 @@ function App() {
       <header style={{ padding: '12px 0px' }}>
         <nav className='container d-flex align-items-center justify-content-between'>
           <h2>iTodos</h2>
-          {/* {user ?
-            <div>
-              <span>{authUser.userEmail}</span>
-              <Button onClick={userSignOut} className='ms-2'>Sign Out</Button>
-            </div>
-            // <li><Authdetails authUser={authUser} userSignOut={userSignOut} /></li>
-            :
-            <button onClick={() => setModalShow(true)} className='btn-primary btn'>LogIn/SignUp</button>
-          } */}
           {user ?
             <>
             <div className='d-flex justify-content-center align-items-center profileImgWrapper'>
@@ -86,7 +95,7 @@ function App() {
                <img src={authUser.userProfile?authUser.userProfile:defaultProfile} alt="profileImg" className='profileImg' />
               </span>
               <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                <Dropdown.Toggle variant="primary" id="dropdown-basic">
                   {
                     authUser.userName ? <span>{authUser.userName}</span> : <span>{authUser.userEmail}</span>
                   }
@@ -147,7 +156,7 @@ function App() {
                   <h3>Todo:- {e.todo}</h3>
                 </div>
                 <div className='btnsDiv'>
-                  <div><button onClick={() => dispatch(deleteTodo(e.id))}>Delete</button></div>
+                  <div><button onClick={() => removeTodo(e.id)}>Delete</button></div>
                   <div><button onClick={() => editTodoHandler(index)} className='mt-2'>Edit</button></div>
                 </div>
               </div> : ''}

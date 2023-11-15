@@ -15,42 +15,32 @@ export const authSlice = createSlice({
         userSignIn: (state, action) => {
             const { user } = action.payload;
             console.log('userSLiceUSer', user)
-            if (user) {
-                return {
-                    ...state,
-                    isVerified: user.emailVerified,
-                    userName: user.displayName,
-                    userEmail: user.email,
-                    isLogIn: true,
 
-                }
+            state.isLogIn = true;
+            state.isVerified = user.emailVerified
+            state.userEmail = user.email;
 
-            }
-            else {
-                // Reset state to initial state if user is null
-                return initialState;
-            }
+            // if (user) {
+            //     return {
+            //         ...state,
+            //         isVerified: user.emailVerified,
+            //         userName: user.displayName,
+            //         userEmail: user.email,
+            //         isLogIn: true,
+            //     }
+            // }
         },
         userLogOut: (state, action) => {
-            state = initialState;
-            return state;
+            const isLogIn = action.payload;
+            console.log(isLogIn, 'login(isLogin)')
+            state.isLogIn = isLogIn;
+            console.log('logOutState', state.isLogIn)
         },
         userProfile: (state, action) => {
-
-            const { name,profile } = action.payload;
-            console.log('userSLiceUSerName',name)
-            if (name) {
-                return {
-                    ...state,
-                    userName: name,
-                    userProfile: profile
-                }
-
-            }
-            else {
-                // Reset state to initial state if user is null
-                return initialState;
-            }
+            const { name, profile } = action.payload;
+            console.log('userSLiceUSerName', name)
+            state.userName = name;
+            state.userProfile = profile
         }
     }
 
